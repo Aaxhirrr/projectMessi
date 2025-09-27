@@ -1,0 +1,647 @@
+const doc = document;
+const root = doc.documentElement;
+
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+const select = (selector, parent = doc) => parent.querySelector(selector);
+const selectAll = (selector, parent = doc) => [...parent.querySelectorAll(selector)];
+const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+const state = {
+  data: null,
+  charts: {
+    career: null,
+    comparison: null,
+  },
+};
+
+const formatNumber = (value, { decimals = 0 } = {}) => {
+  const number = Number.parseFloat(value ?? 0);
+  if (!Number.isFinite(number)) return '0';
+  return number.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+};
+
+const formatDelta = (value, { decimals = 2 } = {}) => {
+  const number = Number.parseFloat(value ?? 0);
+  if (!Number.isFinite(number) || number === 0) return '0';
+  const prefix = number > 0 ? '+' : '-';
+  return `${prefix}${formatNumber(Math.abs(number), { decimals })}`;
+};
+
+// Navigation & progress indicator
+const progressBar = select('.progress-indicator__bar');
+const header = select('.site-header');
+const nav = select('.site-nav');
+const navLinks = selectAll('.nav-link');
+const navToggle = select('.nav-toggle');
+const sections = selectAll('main section[id]');
+
+const setActiveNav = (id) => {
+  navLinks.forEach((link) => {
+    const target = link.getAttribute('href').replace('#', '');
+    link.classList.toggle('is-active', target === id);
+  });
+};
+
+const navObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        setActiveNav(entry.target.id);
+      }
+    });
+  },
+  {
+    threshold: 0.5,
+  }
+);
+
+sections.forEach((section) => navObserver.observe(section));
+
+const updateProgress = () => {
+  const scrollTop = root.scrollTop || doc.body.scrollTop;
+  const scrollHeight = root.scrollHeight - root.clientHeight;
+  const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  if (progressBar) {
+    progressBar.style.width = `${progress}%`;
+  }
+};
+
+window.addEventListener('scroll', updateProgress, { passive: true });
+updateProgress();
+
+if (navToggle && nav) {
+  navToggle.addEventListener('click', () => {
+    nav.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', nav.classList.contains('is-open'));
+  });
+
+  navLinks.forEach((link) =>
+    link.addEventListener('click', () => {
+      nav.classList.remove('is-open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    })
+  );
+}
+
+// Smooth scroll with easing
+const smoothScroll = (event) => {
+  const href = event.currentTarget.getAttribute('href');
+  if (!href || !href.startsWith('#')) return;
+  const target = select(href);
+  if (!target) return;
+  event.preventDefault();
+  const targetTop = target.getBoundingClientRect().top + window.scrollY - (header?.offsetHeight || 0) + 8;
+
+  const start = window.scrollY;
+  const distance = targetTop - start;
+  const duration = 900;
+  let startTime = null;
+
+  const step = (time) => {
+    if (!startTime) startTime = time;
+    const progress = clamp((time - startTime) / duration, 0, 1);
+    const eased = easeInOutCubic(progress);
+    window.scrollTo(0, start + distance * eased);
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+
+  requestAnimationFrame(step);
+};
+
+navLinks.forEach((link) => link.addEventListener('click', smoothScroll));
+select('.footer__top')?.addEventListener('click', smoothScroll);
+
+// Reveal animations
+const animatedElements = selectAll('[data-animate]');
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.25 }
+);
+
+animatedElements.forEach((el) => {
+  const delay = parseFloat(el.getAttribute('data-animate-delay') || '0');
+  if (delay) {
+    el.style.transitionDelay = `${delay}s`;
+  }
+  revealObserver.observe(el);
+});
+
+// Counter animations
+const counterStates = new WeakMap();
+const animateCounter = (el, targetValue, { duration = 1400, decimals = 0 } = {}) => {
+  const target = Number.parseFloat(targetValue ?? el.dataset.counterTarget ?? 0);
+  const startValue = Number.parseFloat((el.textContent || '0').replace(/,/g, '')) || 0;
+  const delta = target - startValue;
+  const start = performance.now();
+
+  const tick = (now) => {
+    const progress = clamp((now - start) / duration, 0, 1);
+    const eased = easeInOutCubic(progress);
+    const value = startValue + delta * eased;
+    el.textContent = formatNumber(value, { decimals });
+    if (progress < 1) {
+      const raf = requestAnimationFrame(tick);
+      counterStates.set(el, raf);
+    } else {
+      el.textContent = formatNumber(target, { decimals });
+      counterStates.delete(el);
+    }
+  };
+
+  const prev = counterStates.get(el);
+  if (typeof prev === 'number') cancelAnimationFrame(prev);
+
+  const raf = requestAnimationFrame(tick);
+  counterStates.set(el, raf);
+};
+
+const setStatValue = (statKey, value, { animate = true, decimals = 0 } = {}) => {
+  const el = select(`[data-stat="${statKey}"]`);
+  if (!el) return;
+  el.dataset.counterTarget = value;
+  if (animate) {
+    animateCounter(el, value, { decimals });
+  } else {
+    el.textContent = formatNumber(value, { decimals });
+  }
+};
+
+const setCellValue = (statKey, value, { decimals = 0 } = {}) => {
+  const el = select(`[data-stat-cell="${statKey}"]`);
+  if (!el) return;
+  el.dataset.value = value;
+  el.textContent = formatNumber(value, { decimals });
+};
+
+const setDeltaValue = (deltaKey, value, { decimals = 2 } = {}) => {
+  const el = select(`[data-delta="${deltaKey}"]`);
+  if (!el) return;
+  const formatted = formatDelta(value, { decimals });
+  el.textContent = formatted === '0' ? '0' : formatted;
+};
+
+const updateFetchedAt = (isoString) => {
+  const el = select('[data-fetched-at]');
+  if (!el) return;
+  const date = isoString ? new Date(isoString) : null;
+  el.textContent = date ? date.toLocaleString(undefined, { dateStyle: 'medium' }) : '—';
+};
+
+// Parallax system
+const parallaxLayers = selectAll('[data-parallax-layer]');
+let parallaxCards = selectAll('[data-parallax-track] [data-depth]');
+let ticking = false;
+
+const handleParallax = () => {
+  const scrollTop = window.scrollY;
+  parallaxLayers.forEach((layer) => {
+    const depth = parseFloat(layer.getAttribute('data-depth')) || 0;
+    const translate = scrollTop * depth * -0.4;
+    layer.style.transform = `translate3d(0, ${translate}px, 0)`;
+  });
+
+  parallaxCards.forEach((card, index) => {
+    const depth = parseFloat(card.getAttribute('data-depth')) || 0.05;
+    const translate = scrollTop * depth * 0.1 + index * 6;
+    card.style.transform = `translate3d(0, ${translate}px, 0)`;
+  });
+
+  ticking = false;
+};
+
+const requestParallax = () => {
+  if (!ticking) {
+    requestAnimationFrame(handleParallax);
+    ticking = true;
+  }
+};
+
+window.addEventListener('scroll', requestParallax, { passive: true });
+requestParallax();
+
+// Hero particle canvas (simple drifting dots)
+const particleCanvas = select('.hero__particles');
+if (particleCanvas) {
+  const ctx = particleCanvas.getContext('2d');
+  const particles = Array.from({ length: 70 }, () => ({
+    x: Math.random(),
+    y: Math.random(),
+    size: Math.random() * 3 + 1,
+    speed: Math.random() * 0.0006 + 0.0002,
+    drift: Math.random() * 0.0005 - 0.00025,
+  }));
+
+  const resize = () => {
+    const ratio = window.devicePixelRatio || 1;
+    particleCanvas.width = particleCanvas.offsetWidth * ratio;
+    particleCanvas.height = particleCanvas.offsetHeight * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  };
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  const renderParticles = () => {
+    ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+    ctx.fillStyle = 'rgba(117, 187, 244, 0.8)';
+
+    particles.forEach((p) => {
+      const x = p.x * particleCanvas.offsetWidth;
+      const y = p.y * particleCanvas.offsetHeight;
+      ctx.beginPath();
+      ctx.arc(x, y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+      p.y -= p.speed * particleCanvas.offsetHeight;
+      p.x += p.drift * particleCanvas.offsetWidth;
+      if (p.y < -20) p.y = 1.1;
+      if (p.x < -0.1) p.x = 1.1;
+      if (p.x > 1.1) p.x = -0.1;
+    });
+
+    requestAnimationFrame(renderParticles);
+  };
+
+  renderParticles();
+}
+
+// Sortable table (basic)
+const comparisonTable = select('.comparison__table table');
+if (comparisonTable) {
+  const tbody = comparisonTable.tBodies[0];
+  const headers = selectAll('[data-sort]', comparisonTable);
+
+  headers.forEach((header) => {
+    header.addEventListener('click', () => {
+      const rows = selectAll('tr', tbody);
+      const index = selectAll('th, td', header.parentElement).indexOf(header);
+      const sorted = rows
+        .slice()
+        .sort((a, b) => {
+          const aCell = a.children[index];
+          const bCell = b.children[index];
+          const aValue = parseFloat(aCell.dataset.value || aCell.textContent.replace(/,/g, ''));
+          const bValue = parseFloat(bCell.dataset.value || bCell.textContent.replace(/,/g, ''));
+          return bValue - aValue;
+        });
+      tbody.innerHTML = '';
+      sorted.forEach((row) => tbody.appendChild(row));
+    });
+  });
+}
+
+// Form handling + confetti
+const voteForm = select('.vote-form');
+const formFeedback = select('.form-feedback');
+
+const spawnConfetti = () => {
+  const container = doc.createElement('div');
+  container.className = 'confetti-container';
+  doc.body.appendChild(container);
+
+  const colors = ['#75bbf4', '#f5c451', '#ff8fab', '#f5f8ff'];
+  const pieces = 40;
+
+  for (let i = 0; i < pieces; i += 1) {
+    const piece = doc.createElement('span');
+    piece.className = 'confetti-piece';
+    piece.style.setProperty('--confetti-x', `${Math.random() * 100}vw`);
+    piece.style.setProperty('--confetti-delay', `${Math.random() * 0.4}s`);
+    piece.style.setProperty('--confetti-rotation', `${Math.random() * 360}deg`);
+    piece.style.backgroundColor = colors[i % colors.length];
+    container.appendChild(piece);
+  }
+
+  setTimeout(() => {
+    container.remove();
+  }, 1800);
+};
+
+if (voteForm) {
+  voteForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    voteForm.reset();
+    if (formFeedback) {
+      formFeedback.textContent = 'Vote locked in. Thanks for keeping the debate alive!';
+    }
+    spawnConfetti();
+  });
+}
+
+// Footer year autopdate
+const yearEl = select('[data-year]');
+if (yearEl) {
+  yearEl.textContent = new Date().getFullYear();
+}
+
+// GSAP scroll accents (optional enhancement)
+if (window.gsap && window.ScrollTrigger) {
+  gsap.utils.toArray('.timeline__item').forEach((item, index) => {
+    gsap.from(item, {
+      opacity: 0,
+      x: -40,
+      duration: 0.6,
+      scrollTrigger: {
+        trigger: item,
+        start: 'top 80%',
+      },
+      delay: index * 0.05,
+    });
+  });
+
+  gsap.from('.records__trophy', {
+    scrollTrigger: {
+      trigger: '.records__trophy',
+      start: 'top 80%',
+    },
+    rotationY: -25,
+    duration: 1.2,
+    ease: 'power3.out',
+  });
+}
+
+// Dataset handling
+const renderSeasonCards = (seasons = []) => {
+  const container = select('[data-season-track]');
+  const template = select('#season-card-template');
+  if (!container || !template) return;
+  container.innerHTML = '';
+
+  seasons.forEach((season, index) => {
+    const clone = template.content.firstElementChild.cloneNode(true);
+    const depth = 0.06 + (index % 4) * 0.015;
+    clone.setAttribute('data-depth', depth.toFixed(2));
+    select('[data-season-title]', clone).textContent = season.season;
+    select('[data-season-ga]', clone).textContent = formatNumber(season.ga);
+    select('[data-season-note]', clone).textContent = `${formatNumber(season.goals)} goals • ${formatNumber(season.assists)} assists (${formatNumber(season.matches)} matches)`;
+    container.appendChild(clone);
+  });
+
+  if (!container.children.length) {
+    container.textContent = 'Season data coming soon.';
+  }
+
+  parallaxCards = selectAll('[data-parallax-track] [data-depth]');
+  requestParallax();
+};
+
+const renderCareerChart = (playerSeasons = []) => {
+  const canvas = select('#careerChart');
+  if (!canvas || !window.Chart) return;
+
+  if (state.charts.career) {
+    state.charts.career.destroy();
+  }
+
+  const labels = playerSeasons.map((season) => season.season);
+  const goalsAssists = playerSeasons.map((season) => season.ga);
+  const goals = playerSeasons.map((season) => season.goals);
+  const assists = playerSeasons.map((season) => season.assists);
+
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  gradient.addColorStop(0, 'rgba(117, 187, 244, 0.6)');
+  gradient.addColorStop(1, 'rgba(117, 187, 244, 0)');
+
+  state.charts.career = new Chart(canvas, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Goals + Assists',
+          data: goalsAssists,
+          fill: true,
+          backgroundColor: gradient,
+          borderColor: 'rgba(117, 187, 244, 1)',
+          borderWidth: 3,
+          tension: 0.35,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+        },
+        {
+          type: 'line',
+          label: 'Goals',
+          data: goals,
+          borderColor: 'rgba(245, 196, 81, 0.9)',
+          borderDash: [6, 4],
+          borderWidth: 2,
+          tension: 0.35,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+        },
+        {
+          type: 'bar',
+          label: 'Assists',
+          data: assists,
+          backgroundColor: 'rgba(255, 143, 171, 0.35)',
+          borderRadius: 12,
+          borderSkipped: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: '#f5f8ff',
+            font: {
+              family: 'Inter',
+            },
+          },
+        },
+        tooltip: {
+          backgroundColor: 'rgba(5, 10, 18, 0.9)',
+          borderColor: 'rgba(117, 187, 244, 0.4)',
+          borderWidth: 1,
+          titleColor: '#f5f8ff',
+          bodyColor: '#f5f8ff',
+          padding: 12,
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: 'rgba(245, 248, 255, 0.8)',
+            font: {
+              family: 'Inter',
+            },
+          },
+          grid: {
+            color: 'rgba(117, 187, 244, 0.1)',
+          },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: 'rgba(245, 248, 255, 0.8)',
+          },
+          grid: {
+            color: 'rgba(117, 187, 244, 0.08)',
+          },
+        },
+      },
+    },
+  });
+};
+
+const renderComparisonChart = (dataset) => {
+  const canvas = select('#comparisonChart');
+  if (!canvas || !window.Chart) return;
+
+  if (state.charts.comparison) {
+    state.charts.comparison.destroy();
+  }
+
+  const messi = dataset.players.messi;
+  const ronaldo = dataset.players.ronaldo;
+
+  const radarData = {
+    labels: ['Goals + Assists', 'Goals', 'Assists', 'Trophies', "Ballon d'Or"],
+    datasets: [
+      {
+        label: 'Messi',
+        data: [
+          messi.totals.ga,
+          messi.totals.goals,
+          messi.totals.assists,
+          messi.accolades.totalTrophies,
+          messi.accolades.ballonDor,
+        ],
+        borderColor: 'rgba(117, 187, 244, 1)',
+        backgroundColor: 'rgba(117, 187, 244, 0.2)',
+        pointBackgroundColor: 'rgba(117, 187, 244, 1)',
+      },
+      {
+        label: 'Ronaldo',
+        data: [
+          ronaldo.totals.ga,
+          ronaldo.totals.goals,
+          ronaldo.totals.assists,
+          ronaldo.accolades.totalTrophies,
+          ronaldo.accolades.ballonDor,
+        ],
+        borderColor: 'rgba(245, 196, 81, 1)',
+        backgroundColor: 'rgba(245, 196, 81, 0.15)',
+        pointBackgroundColor: 'rgba(245, 196, 81, 1)',
+      },
+    ],
+  };
+
+  state.charts.comparison = new Chart(canvas, {
+    type: 'radar',
+    data: radarData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          beginAtZero: true,
+          angleLines: {
+            color: 'rgba(117, 187, 244, 0.12)',
+          },
+          grid: {
+            color: 'rgba(117, 187, 244, 0.16)',
+          },
+          pointLabels: {
+            color: '#f5f8ff',
+            font: {
+              family: 'Inter',
+              size: 14,
+            },
+          },
+          ticks: {
+            display: false,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#f5f8ff',
+            font: {
+              family: 'Inter',
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+const updateComparisonSnapshot = (dataset) => {
+  const { messi, ronaldo } = dataset.players;
+
+  setCellValue('messi.totals.ga', messi.totals.ga);
+  setCellValue('messi.totals.goals', messi.totals.goals);
+  setCellValue('messi.totals.assists', messi.totals.assists);
+  setCellValue('messi.accolades.totalTrophies', messi.accolades.totalTrophies);
+  setCellValue('messi.accolades.ballonDor', messi.accolades.ballonDor);
+
+  setCellValue('ronaldo.totals.ga', ronaldo.totals.ga);
+  setCellValue('ronaldo.totals.goals', ronaldo.totals.goals);
+  setCellValue('ronaldo.totals.assists', ronaldo.totals.assists);
+  setCellValue('ronaldo.accolades.totalTrophies', ronaldo.accolades.totalTrophies);
+  setCellValue('ronaldo.accolades.ballonDor', ronaldo.accolades.ballonDor);
+
+  const gaPer90Delta = messi.totals.gaPer90 - ronaldo.totals.gaPer90;
+  const trophyDelta = messi.accolades.totalTrophies - ronaldo.accolades.totalTrophies;
+  const awardsDelta = messi.accolades.ballonDor - ronaldo.accolades.ballonDor;
+
+  setDeltaValue('ga-per-90', gaPer90Delta, { decimals: 2 });
+  setDeltaValue('trophies', trophyDelta, { decimals: 0 });
+  setDeltaValue('awards', awardsDelta, { decimals: 0 });
+};
+
+const hydrateHeroStats = (dataset) => {
+  const { messi } = dataset.players;
+  setStatValue('messi.totals.ga', messi.totals.ga);
+  setStatValue('messi.totals.goals', messi.totals.goals);
+  setStatValue('messi.totals.assists', messi.totals.assists);
+  setStatValue('messi.accolades.totalTrophies', messi.accolades.totalTrophies);
+  setStatValue('messi.accolades.ballonDor', messi.accolades.ballonDor);
+};
+
+const applyDataset = (dataset) => {
+  state.data = dataset;
+  hydrateHeroStats(dataset);
+  renderSeasonCards(dataset.players.messi.topSeasons);
+  renderCareerChart(dataset.players.messi.seasons);
+  renderComparisonChart(dataset);
+  updateComparisonSnapshot(dataset);
+  updateFetchedAt(dataset.fetchedAt);
+};
+
+const loadDataset = async () => {
+  try {
+    const response = await fetch('data/mvsr-data.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Failed to load dataset: ${response.status}`);
+    const data = await response.json();
+    applyDataset(data);
+  } catch (error) {
+    console.error('Dataset load failed:', error);
+    const meta = select('[data-dataset-meta]');
+    if (meta) meta.textContent = 'Live dataset could not be loaded.';
+  }
+};
+
+loadDataset();
+

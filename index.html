@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messi: The Statistical Anomaly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-shell" data-scroll-container>
+    <header class="site-header" data-parallax-layer data-depth="0.05">
+      <div class="logo">Messi<span>Anomaly</span></div>
+      <nav class="site-nav" aria-label="Primary">
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+        </button>
+        <ul class="nav-list">
+          <li><a href="#top" class="nav-link">Home</a></li>
+          <li><a href="#thesis" class="nav-link">Thesis</a></li>
+          <li><a href="#career" class="nav-link">Career Stats</a></li>
+          <li><a href="#head-to-head" class="nav-link">Head-to-Head</a></li>
+          <li><a href="#records" class="nav-link">Records</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#vote" class="nav-link nav-link--cta">Vote</a></li>
+        </ul>
+      </nav>
+      <div class="progress-indicator" aria-hidden="true">
+        <span class="progress-indicator__bar"></span>
+      </div>
+    </header>
+
+    <main id="top" class="main-content">
+      <!-- Hero -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__background" role="presentation">
+          <div class="hero__layer hero__layer--bg" data-parallax-layer data-depth="0.02"></div>
+          <div class="hero__layer hero__layer--mid" data-parallax-layer data-depth="0.05"></div>
+          <div class="hero__layer hero__layer--fg" data-parallax-layer data-depth="0.1"></div>
+          <canvas class="hero__particles" aria-hidden="true"></canvas>
+        </div>
+        <div class="hero__inner">
+          <p class="hero__eyebrow" data-animate="fade-up">Messi: The Statistical Anomaly</p>
+          <h1 id="hero-title" class="hero__title" data-animate="fade-up" data-animate-delay="0.1">
+            The numbers bend around Leo.
+          </h1>
+          <p class="hero__copy" data-animate="fade-up" data-animate-delay="0.2">
+            A cinematic, data-driven journey revealing how Lionel Messi rewrote the limits of modern football.
+          </p>
+          <div class="hero__cta" data-animate="fade-up" data-animate-delay="0.3">
+            <a href="#career" class="button button--primary">Dive into the data</a>
+            <a href="#vote" class="button button--ghost">Cast your vote</a>
+          </div>
+          <div class="hero__stats" role="list" data-animate="fade-up" data-animate-delay="0.4">
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-value" data-counter data-counter-target="0" data-stat="messi.totals.ga">0</span>
+              <span class="hero__stat-label">Goals + Assists</span>
+            </div>
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-value" data-counter data-counter-target="0" data-stat="messi.totals.goals">0</span>
+              <span class="hero__stat-label">Goals</span>
+            </div>
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-value" data-counter data-counter-target="0" data-stat="messi.totals.assists">0</span>
+              <span class="hero__stat-label">Assists</span>
+            </div>
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-value" data-counter data-counter-target="0" data-stat="messi.accolades.totalTrophies">0</span>
+              <span class="hero__stat-label">Trophies</span>
+            </div>
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-value" data-counter data-counter-target="0" data-stat="messi.accolades.ballonDor">0</span>
+              <span class="hero__stat-label">Ballon d'Or Awards</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Thesis -->
+      <section id="thesis" class="section section--thesis" aria-labelledby="thesis-title">
+        <div class="section__inner">
+          <div class="section__header">
+            <p class="section__eyebrow" data-animate="slide-up">Why Messi is impossible</p>
+            <h2 id="thesis-title" class="section__title" data-animate="slide-up" data-animate-delay="0.1">
+              A statistical outlier among outliers.
+            </h2>
+          </div>
+          <div class="thesis__layout">
+            <div class="thesis__narrative" data-animate="slide-up" data-animate-delay="0.2">
+              <p>
+                Messi blends volume, efficiency, longevity, and clutch production in a way the sport has never seen.
+                This site delivers the receipts—season by season, competition by competition.
+              </p>
+              <p>
+                We’ll show how his goal contributions outpace expectation, how his playmaking unlocks teammates, and why trophies follow wherever he goes.
+              </p>
+            </div>
+            <div class="thesis__highlights" data-animate="slide-up" data-animate-delay="0.3">
+              <article class="highlight-card">
+                <h3 class="highlight-card__title">Consistency</h3>
+                <p class="highlight-card__meta">G/A per 90 never dipping below elite levels.</p>
+              </article>
+              <article class="highlight-card">
+                <h3 class="highlight-card__title">Peak Impact</h3>
+                <p class="highlight-card__meta">Messi’s best seasons dwarf other legends’ averages.</p>
+              </article>
+              <article class="highlight-card">
+                <h3 class="highlight-card__title">Team Catalyst</h3>
+                <p class="highlight-card__meta">Assists plus second assists keep chance creation sky high.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Career Stats -->
+      <section id="career" class="section section--career" aria-labelledby="career-title">
+        <div class="section__inner">
+          <div class="section__header">
+            <p class="section__eyebrow" data-animate="slide-up">Career arc</p>
+            <h2 id="career-title" class="section__title" data-animate="slide-up" data-animate-delay="0.1">
+              Season-by-season dominance.
+            </h2>
+          </div>
+          <div class="career__controls" data-animate="slide-up" data-animate-delay="0.2" role="tablist">
+            <button class="pill pill--active" role="tab" aria-selected="true" data-filter="all">All</button>
+            <button class="pill" role="tab" aria-selected="false" data-filter="club" disabled>Club</button>
+            <button class="pill" role="tab" aria-selected="false" data-filter="national" disabled>National</button>
+          </div>
+          <div class="career__chart" data-animate="slide-up" data-animate-delay="0.3">
+            <canvas id="careerChart" width="960" height="540" role="img" aria-label="Season-by-season chart placeholder"></canvas>
+          </div>
+          <div class="season-gallery" data-animate="slide-up" data-animate-delay="0.4">
+            <div class="season-track" data-parallax-track data-season-track aria-live="polite"></div>
+            <template id="season-card-template">
+              <article class="season-card" data-depth="0.08">
+                <h3 class="season-card__title" data-season-title>Season</h3>
+                <p class="season-card__stat"><span data-season-ga>0</span> GA</p>
+                <p class="season-card__meta" data-season-note>Signature season highlight.</p>
+              </article>
+            </template>
+          </div>
+        </div>
+      </section>
+
+      <!-- Head-to-Head -->
+      <section id="head-to-head" class="section section--head" aria-labelledby="head-title">
+        <div class="section__inner">
+          <div class="section__header">
+            <p class="section__eyebrow" data-animate="slide-up">Comparative lens</p>
+            <h2 id="head-title" class="section__title" data-animate="slide-up" data-animate-delay="0.1">
+              How Messi stacks against the best.
+            </h2>
+          </div>
+          <div class="comparison__controls" data-animate="slide-up" data-animate-delay="0.2" role="radiogroup">
+            <button class="pill pill--active" role="radio" aria-checked="true" data-compare="ronaldo">Ronaldo</button>
+            <button class="pill" role="radio" aria-checked="false" data-compare="mbappe" disabled>Mbappé (soon)</button>
+            <button class="pill" role="radio" aria-checked="false" data-compare="haaland" disabled>Haaland (soon)</button>
+          </div>
+          <div class="comparison__visuals">
+            <div class="comparison__chart" data-animate="slide-up" data-animate-delay="0.3">
+              <canvas id="comparisonChart" width="640" height="480" aria-label="Head-to-head chart placeholder"></canvas>
+            </div>
+            <div class="comparison__stats" data-animate="slide-up" data-animate-delay="0.4">
+              <article class="stat-block">
+                <h3 class="stat-block__title">GA per 90</h3>
+                <p class="stat-block__value"><span data-delta="ga-per-90">--</span></p>
+                <p class="stat-block__meta">Messi vs. Ronaldo differential.</p>
+              </article>
+              <article class="stat-block">
+                <h3 class="stat-block__title">Trophies</h3>
+                <p class="stat-block__value"><span data-delta="trophies">--</span></p>
+                <p class="stat-block__meta">Club & international major honors.</p>
+              </article>
+              <article class="stat-block">
+                <h3 class="stat-block__title">Awards</h3>
+                <p class="stat-block__value"><span data-delta="awards">--</span></p>
+                <p class="stat-block__meta">Ballon d’Or differential.</p>
+              </article>
+            </div>
+          </div>
+          <div class="comparison__table" data-animate="slide-up" data-animate-delay="0.5">
+            <table>
+              <caption>Messi vs. Ronaldo key metrics snapshot</caption>
+              <thead>
+                <tr>
+                  <th scope="col" data-sort="player">Player</th>
+                  <th scope="col" data-sort="ga">Goals + Assists</th>
+                  <th scope="col" data-sort="goals">Goals</th>
+                  <th scope="col" data-sort="assists">Assists</th>
+                  <th scope="col" data-sort="trophies">Trophies</th>
+                  <th scope="col" data-sort="awards">Major Awards</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-player-row="messi">
+                  <th scope="row">Lionel Messi</th>
+                  <td data-stat-cell="messi.totals.ga" data-value="0">0</td>
+                  <td data-stat-cell="messi.totals.goals" data-value="0">0</td>
+                  <td data-stat-cell="messi.totals.assists" data-value="0">0</td>
+                  <td data-stat-cell="messi.accolades.totalTrophies" data-value="0">0</td>
+                  <td data-stat-cell="messi.accolades.ballonDor" data-value="0">0</td>
+                </tr>
+                <tr data-player-row="ronaldo">
+                  <th scope="row">Cristiano Ronaldo</th>
+                  <td data-stat-cell="ronaldo.totals.ga" data-value="0">0</td>
+                  <td data-stat-cell="ronaldo.totals.goals" data-value="0">0</td>
+                  <td data-stat-cell="ronaldo.totals.assists" data-value="0">0</td>
+                  <td data-stat-cell="ronaldo.accolades.totalTrophies" data-value="0">0</td>
+                  <td data-stat-cell="ronaldo.accolades.ballonDor" data-value="0">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Records & Highlights -->
+      <section id="records" class="section section--records" aria-labelledby="records-title">
+        <div class="section__inner">
+          <div class="section__header">
+            <p class="section__eyebrow" data-animate="slide-up">Legacy</p>
+            <h2 id="records-title" class="section__title" data-animate="slide-up" data-animate-delay="0.1">
+              Records that defy logic.
+            </h2>
+          </div>
+          <div class="records__layout">
+            <div class="records__timeline" data-animate="slide-up" data-animate-delay="0.2">
+              <ol class="timeline">
+                <li class="timeline__item">
+                  <div class="timeline__year">2012</div>
+                  <p class="timeline__copy">Most goals in a calendar year (91) – still untouchable.</p>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__year">2015</div>
+                  <p class="timeline__copy">Only player to win two European Trebles.</p>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__year">2021</div>
+                  <p class="timeline__copy">Copa América champion, Golden Ball, top scorer & top assist provider.</p>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__year">2022</div>
+                  <p class="timeline__copy">World Cup Golden Ball twice – first in history.</p>
+                </li>
+              </ol>
+            </div>
+            <div class="records__trophy" data-animate="slide-up" data-animate-delay="0.3">
+              <div class="trophy-display" role="img" aria-label="3D trophy placeholder">Trophy wall placeholder</div>
+            </div>
+            <div class="records__highlight" data-animate="slide-up" data-animate-delay="0.4">
+              <figure class="highlight-video">
+                <video src="assets/video/highlight-placeholder.mp4" poster="assets/images/highlight-poster.jpg" controls preload="none">
+                  <p>Your browser does not support the video tag.</p>
+                </video>
+                <figcaption>Highlight reel placeholder – swap with licensed clip.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About / Data Sources -->
+      <section id="about" class="section section--about" aria-labelledby="about-title">
+        <div class="section__inner">
+          <div class="section__header">
+            <p class="section__eyebrow" data-animate="slide-up">Transparency</p>
+            <h2 id="about-title" class="section__title" data-animate="slide-up" data-animate-delay="0.1">
+              Methodology & data sources.
+            </h2>
+          </div>
+          <div class="about__grid">
+            <article class="about-card" data-animate="slide-up" data-animate-delay="0.2">
+              <h3>Data Pipeline</h3>
+              <p>Primary stats compiled from FBref and Transfermarkt, normalized to per-90 for apples-to-apples comparisons.</p>
+            </article>
+            <article class="about-card" data-animate="slide-up" data-animate-delay="0.25">
+              <h3>Advanced Metrics</h3>
+              <p>xG and xA sourced from Understat; conversion rates calculated with custom scripts (details coming soon).</p>
+            </article>
+            <article class="about-card" data-animate="slide-up" data-animate-delay="0.3">
+              <h3>Visual Assets</h3>
+              <p>Images & video sourced from Wikimedia Commons and licensed highlight clips. 3D trophy model placeholder ready.</p>
+            </article>
+            <article class="about-card" data-animate="slide-up" data-animate-delay="0.35">
+              <h3>Download Snapshot</h3>
+              <p><a href="data/stats.csv" download>Grab the CSV excerpt</a> for transparency and future analysis.</p>
+              <p class="about-card__meta" data-dataset-meta>
+                Dataset sourced from <a href="https://www.messivsronaldo.app/" target="_blank" rel="noreferrer">MessiVsRonaldo.app</a>.
+                Last synced <span data-fetched-at>--</span>.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vote & Contact -->
+      <section id="vote" class="section section--vote" aria-labelledby="vote-title">
+        <div class="section__inner">
+          <div class="section__header">
+            <p class="section__eyebrow" data-animate="slide-up">Your voice</p>
+            <h2 id="vote-title" class="section__title" data-animate="slide-up" data-animate-delay="0.1">
+              Cast your GOAT vote & share feedback.
+            </h2>
+          </div>
+          <form class="vote-form" data-animate="slide-up" data-animate-delay="0.2" action="#" method="post">
+            <div class="form-row">
+              <label for="full-name">Full Name</label>
+              <input type="text" id="full-name" name="full-name" placeholder="Your name" required />
+            </div>
+            <div class="form-row">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" required />
+            </div>
+            <div class="form-row">
+              <label for="favorite-player">Favorite Player</label>
+              <select id="favorite-player" name="favorite-player" required>
+                <option value="" disabled selected>Select one</option>
+                <option value="messi">Lionel Messi</option>
+                <option value="ronaldo">Cristiano Ronaldo</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="why">Why did you choose them?</label>
+              <textarea id="why" name="why" rows="3" placeholder="Share your reasoning"></textarea>
+            </div>
+            <div class="form-row form-row--inline">
+              <label for="age-range">Age Range</label>
+              <select id="age-range" name="age-range">
+                <option value="" disabled selected>Select</option>
+                <option value="under18">Under 18</option>
+                <option value="18-25">18-25</option>
+                <option value="26-35">26-35</option>
+                <option value="36-45">36-45</option>
+                <option value="46-plus">46+</option>
+              </select>
+              <label class="checkbox">
+                <input type="checkbox" name="newsletter" />
+                <span>Opt into the newsletter</span>
+              </label>
+            </div>
+            <div class="form-row form-row--actions">
+              <button type="submit" class="button button--primary">Submit your vote</button>
+            </div>
+            <div class="form-feedback" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <p>© <span data-year></span> Messi: The Statistical Anomaly. Crafted for football obsessives.</p>
+        <a href="#top" class="footer__top">Back to top</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="js/main.js" type="module"></script>
+</body>
+</html>
