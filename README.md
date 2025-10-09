@@ -1,5 +1,7 @@
 # Messi: The Statistical Anomaly
 
+- Live github.io site: https://aaxhirrr.github.io/projectMessi/
+
 ## Live Data Pipeline
 - `node scripts/fetch-mvsr-data.js` pulls fresh Messi vs Ronaldo stats from https://www.messivsronaldo.app/ using Gatsby page-data endpoints.
 - Output lives in `data/mvsr-data.json` (checked into the repo for offline development). Each run stamps `fetchedAt` so the UI can surface sync time.
