@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Records &amp; Highlights — Messi Anomaly</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/main.js" type="module"></script>
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <div class="loader" id="loader">
+        <div class="loader-text">MESSI</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html" class="logo">MESSI•ANOMALY</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="career-stats.html">Career Stats</a></li>
+            <li><a href="head-to-head.html">Head-to-Head</a></li>
+            <li><a href="records.html" class="is-active">Records &amp; Highlights</a></li>
+            <li><a href="about.html">About / Data Sources</a></li>
+            <li><a href="vote.html">Vote &amp; Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="page-hero">
+            <h1 class="page-hero__title">Records &amp; Highlights</h1>
+            <p class="page-hero__copy">Scroll through the milestones that seemed impossible, replay the 30-second micro reel, and inspect a 3D-inspired trophy wall sketch. Every entry cites the league or competition source.</p>
+            <p class="page-hero__meta">All records verified via Transfermarkt, La Liga, UEFA, and FIFA archives.</p>
+        </section>
+
+        <section class="timeline-section fade-in">
+            <h2>Timeline of impossibles</h2>
+            <ol class="record-timeline">
+                <li>
+                    <span class="record-year">2012</span>
+                    <p class="record-copy">91 goals in a calendar year — FIFA-certified all-competition record.</p>
+                </li>
+                <li>
+                    <span class="record-year">2015</span>
+                    <p class="record-copy">Only player to win two European Trebles (2009 &amp; 2015) with the same club.</p>
+                </li>
+                <li>
+                    <span class="record-year">2019</span>
+                    <p class="record-copy">Most La Liga hat-tricks (36) and assists in a single season (22).</p>
+                </li>
+                <li>
+                    <span class="record-year">2021</span>
+                    <p class="record-copy">First South American man to win Copa América Golden Boot + Golden Ball in the same tournament.</p>
+                </li>
+                <li>
+                    <span class="record-year">2022</span>
+                    <p class="record-copy">First player to win two World Cup Golden Balls, delivering 7 goals &amp; 3 assists in Qatar.</p>
+                </li>
+            </ol>
+        </section>
+
+        <section class="highlight-section fade-in">
+            <div class="highlight-media">
+                <video controls preload="metadata" poster="assets/images/highlight-poster.jpg">
+                    <source src="assets/video/highlight-placeholder.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p class="highlight-note">30-second micro reel assembled from licensed or fair-use clips. Replace with your own montage before publishing widely.</p>
+            </div>
+            <aside class="trophy-wall">
+                <h2>3D trophy wall (prototype)</h2>
+                <p>This placeholder represents a future Three.js scene featuring Messi&rsquo;s major silverware. For now, we surface the counts directly:</p>
+                <ul>
+                    <li><span data-stat-key="messi.accolades.totalTrophies">0</span> Major trophies</li>
+                    <li><span data-stat-key="messi.accolades.ballonDor">0</span> Ballon d'Or awards</li>
+                    <li><span data-stat-key="messi.accolades.fifaBest">0</span> FIFA Best / FIFA World Player</li>
+                </ul>
+                <p class="highlight-note">Hook up a GLB model and render with Three.js to complete the experience.</p>
+            </aside>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span data-year></span> Messi: The Statistical Anomaly. Data, context, and spectacle.</p>
+    </footer>
+</body>
+</html>

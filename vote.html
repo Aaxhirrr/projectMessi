@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote &amp; Contact — Messi Anomaly</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/main.js" type="module"></script>
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <div class="loader" id="loader">
+        <div class="loader-text">MESSI</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html" class="logo">MESSI•ANOMALY</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="career-stats.html">Career Stats</a></li>
+            <li><a href="head-to-head.html">Head-to-Head</a></li>
+            <li><a href="records.html">Records &amp; Highlights</a></li>
+            <li><a href="about.html">About / Data Sources</a></li>
+            <li><a href="vote.html" class="is-active">Vote &amp; Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="page-hero">
+            <h1 class="page-hero__title">Vote &amp; Contact</h1>
+            <p class="page-hero__copy">Cast your GOAT vote, explain why, and tell us how to improve the dataset. No backend processing occurs—submissions stay client-side for demo purposes.</p>
+            <p class="page-hero__meta">Form fields mirror the project planning brief (name, email, favorite player, reasoning, newsletter opt-in, age range).</p>
+        </section>
+
+        <section class="form-section fade-in">
+            <form class="vote-form" action="#" method="post" novalidate>
+                <div class="form-row">
+                    <label for="full-name">Full Name</label>
+                    <input type="text" id="full-name" name="full-name" placeholder="Your name" required>
+                </div>
+                <div class="form-row">
+                    <label for="email">Email Address <span>(optional)</span></label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com">
+                </div>
+                <div class="form-row">
+                    <label for="favorite-player">Favorite Player</label>
+                    <select id="favorite-player" name="favorite-player" required>
+                        <option value="" disabled selected>Select one</option>
+                        <option value="messi">Lionel Messi</option>
+                        <option value="ronaldo">Cristiano Ronaldo</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="why">Why did you choose them?</label>
+                    <textarea id="why" name="why" rows="4" placeholder="Share your reasoning" required></textarea>
+                </div>
+                <div class="form-row form-row--inline">
+                    <label for="age-range">Age Range</label>
+                    <select id="age-range" name="age-range" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="under18">Under 18</option>
+                        <option value="18-25">18-25</option>
+                        <option value="26-35">26-35</option>
+                        <option value="36-45">36-45</option>
+                        <option value="46-plus">46+</option>
+                    </select>
+                    <label class="checkbox">
+                        <input type="checkbox" name="newsletter">
+                        <span>Opt into the newsletter</span>
+                    </label>
+                </div>
+                <div class="form-row form-row--actions">
+                    <button type="submit" class="hero-cta">Submit your vote</button>
+                </div>
+                <p class="form-feedback" aria-live="polite">We don&rsquo;t store submissions—this page demonstrates the form experience for the assignment.</p>
+            </form>
+        </section>
+
+        <section class="contact-section fade-in">
+            <h2>Direct contact</h2>
+            <p>Prefer email? Reach out at <a href="mailto:data@messianomaly.com">data@messianomaly.com</a>. We also welcome collaboration ideas around Three.js trophy scenes, additional rival comparisons, or advanced visualizations.</p>
+            <p class="privacy-note">Privacy note: This demo does not send or store personal data. For a production release, integrate a backend service or form provider and update the privacy policy accordingly.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span data-year></span> Messi: The Statistical Anomaly. Data, context, and spectacle.</p>
+    </footer>
+</body>
+</html>

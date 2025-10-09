@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Stats — Messi Anomaly</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/main.js" type="module"></script>
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <div class="loader" id="loader">
+        <div class="loader-text">MESSI</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html" class="logo">MESSI•ANOMALY</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="career-stats.html" class="is-active">Career Stats</a></li>
+            <li><a href="head-to-head.html">Head-to-Head</a></li>
+            <li><a href="records.html">Records &amp; Highlights</a></li>
+            <li><a href="about.html">About / Data Sources</a></li>
+            <li><a href="vote.html">Vote &amp; Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="page-hero">
+            <h1 class="page-hero__title">Career Stats</h1>
+            <p class="page-hero__copy">Season-by-season production, normalized rates, and club vs. country splits—all sourced from FBref, Understat, and Transfermarkt. Use the table to sort by your preferred metric and watch the chart respond.</p>
+            <p class="page-hero__meta">Data hydrates automatically from <code>data/mvsr-data.json</code>.</p>
+        </section>
+
+        <section class="about tease fade-in" aria-label="Top-line metrics">
+            <div class="tease-grid">
+                <div class="stat">
+                    <span class="stat-number" data-stat-key="messi.totals.apps">0</span>
+                    <span class="stat-label">Appearances</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-stat-key="messi.totals.minsPlayed">0</span>
+                    <span class="stat-label">Minutes Played</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-stat-key="messi.totals.goalsPerGame" data-precision="3">0</span>
+                    <span class="stat-label">Goals / Game</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-stat-key="messi.totals.gaPer90" data-precision="2">0</span>
+                    <span class="stat-label">GA per 90</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="chart-section fade-in">
+            <div class="chart-header">
+                <h2>Season Arc</h2>
+                <p>Combined goals + assists, goal-only, and assist-only trends. Toggle filters to isolate club or international production.</p>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="careerChart" width="960" height="540" aria-label="Line and bar chart of Messi's season output"></canvas>
+                <p class="chart-note">Chart.js renders client-side using the hydrated dataset.</p>
+            </div>
+        </section>
+
+        <section class="table-section fade-in">
+            <div class="table-header">
+                <h2>Sortable season table</h2>
+                <p>Click any header to sort. Values shown below represent a curated sample; full data populates from the dataset.</p>
+            </div>
+            <div class="table-scroll">
+                <table class="data-table" data-sortable>
+                    <thead>
+                        <tr>
+                            <th scope="col" data-sort="season">Season</th>
+                            <th scope="col" data-sort="competition">Competition</th>
+                            <th scope="col" data-sort="apps">Apps</th>
+                            <th scope="col" data-sort="goals">Goals</th>
+                            <th scope="col" data-sort="assists">Assists</th>
+                            <th scope="col" data-sort="ga">Goal + Assist</th>
+                            <th scope="col" data-sort="ga90">GA / 90</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">2011/12</th>
+                            <td>Barcelona</td>
+                            <td data-value="60">60</td>
+                            <td data-value="73">73</td>
+                            <td data-value="29">29</td>
+                            <td data-value="102">102</td>
+                            <td data-value="1.68">1.68</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2014/15</th>
+                            <td>Barcelona</td>
+                            <td data-value="57">57</td>
+                            <td data-value="58">58</td>
+                            <td data-value="31">31</td>
+                            <td data-value="89">89</td>
+                            <td data-value="1.56">1.56</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2019/20</th>
+                            <td>Barcelona</td>
+                            <td data-value="44">44</td>
+                            <td data-value="31">31</td>
+                            <td data-value="27">27</td>
+                            <td data-value="58">58</td>
+                            <td data-value="1.32">1.32</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2022</th>
+                            <td>Argentina</td>
+                            <td data-value="10">10</td>
+                            <td data-value="10">10</td>
+                            <td data-value="3">3</td>
+                            <td data-value="13">13</td>
+                            <td data-value="1.41">1.41</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2023</th>
+                            <td>Inter Miami / Argentina</td>
+                            <td data-value="41">41</td>
+                            <td data-value="32">32</td>
+                            <td data-value="19">19</td>
+                            <td data-value="51">51</td>
+                            <td data-value="1.25">1.25</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="fact-section fade-in" aria-labelledby="fact-title">
+            <div class="fact-header">
+                <h2 id="fact-title">All-time snapshots</h2>
+                <p>Quick reference cards lifted from MessivsRonaldo.app. Use them as story prompts or sanity checks while exploring the interactive data.</p>
+            </div>
+            <div class="fact-grid">
+                <article class="fact-card">
+                    <h3>All-Time Career</h3>
+                    <ul>
+                        <li><strong>Goals:</strong> 884</li>
+                        <li><strong>Assists:</strong> 395</li>
+                        <li><strong>Appearances:</strong> 1,127</li>
+                    </ul>
+                </article>
+                <article class="fact-card">
+                    <h3>Career (excl. USA/Saudi)</h3>
+                    <ul>
+                        <li><strong>Goals:</strong> 818</li>
+                        <li><strong>Assists:</strong> 361</li>
+                        <li><strong>Appearances:</strong> 1,047</li>
+                        <li><strong>Mins / Goal:</strong> 105.2</li>
+                        <li><strong>Mins / GA:</strong> 73.0</li>
+                        <li><strong>Hat-tricks:</strong> 58 &nbsp;|&nbsp; <strong>Penalties:</strong> 108</li>
+                    </ul>
+                </article>
+                <article class="fact-card">
+                    <h3>All-Time Club</h3>
+                    <ul>
+                        <li><strong>Goals:</strong> 770</li>
+                        <li><strong>Assists:</strong> 337</li>
+                        <li><strong>Apps:</strong> 933</li>
+                        <li><strong>Minutes:</strong> 76,510</li>
+                        <li><strong>Goals / Game:</strong> 0.83</li>
+                        <li><strong>Mins / Goal:</strong> 99.4</li>
+                    </ul>
+                </article>
+                <article class="fact-card">
+                    <h3>All-Time League</h3>
+                    <ul>
+                        <li><strong>Goals:</strong> 541</li>
+                        <li><strong>Assists:</strong> 248</li>
+                        <li><strong>Apps:</strong> 629</li>
+                        <li><strong>Mins / Goal:</strong> 94.7</li>
+                        <li><strong>Mins / GA:</strong> 64.9</li>
+                        <li><strong>Hat-tricks:</strong> 37</li>
+                    </ul>
+                </article>
+                <article class="fact-card">
+                    <h3>UEFA Champions League</h3>
+                    <ul>
+                        <li><strong>Goals:</strong> 129</li>
+                        <li><strong>Assists:</strong> 40</li>
+                        <li><strong>Apps:</strong> 163</li>
+                        <li><strong>Mins / Goal:</strong> 105.2</li>
+                        <li><strong>Hat-tricks:</strong> 8 &nbsp;|&nbsp; <strong>Penalties:</strong> 18/23</li>
+                    </ul>
+                </article>
+                <article class="fact-card">
+                    <h3>Goal Contributions</h3>
+                    <ul>
+                        <li><strong>Goals:</strong> 884</li>
+                        <li><strong>Assists:</strong> 395</li>
+                        <li><strong>Appearances:</strong> 1,127</li>
+                        <li><strong>Minutes:</strong> 92,547</li>
+                        <li><strong>Mins / GA:</strong> 72.4</li>
+                    </ul>
+                </article>
+                <article class="fact-card">
+                    <h3>Goals by Type</h3>
+                    <ul>
+                        <li><strong>Penalties:</strong> 111/143</li>
+                        <li><strong>Free Kicks:</strong> 69</li>
+                        <li><strong>Outside Box:</strong> 102</li>
+                        <li><strong>Inside Box:</strong> 602</li>
+                        <li><strong>Left / Right Foot:</strong> 742 / 110</li>
+                        <li><strong>Headers / Other:</strong> 28 / 4</li>
+                    </ul>
+                </article>
+                <article class="fact-card">
+                    <h3>Performance profile</h3>
+                    <ul>
+                        <li><strong>Shots:</strong> 4,062 (46% on target)</li>
+                        <li><strong>Successful Dribbles:</strong> 4,001</li>
+                        <li><strong>Key Passes:</strong> 1,998</li>
+                        <li><strong>Big Chances Created:</strong> 566</li>
+                        <li><strong>Man of the Match:</strong> 433</li>
+                        <li><strong>Avg Rating:</strong> 8.40</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span data-year></span> Messi: The Statistical Anomaly. Data, context, and spectacle.</p>
+    </footer>
+</body>
+</html>
