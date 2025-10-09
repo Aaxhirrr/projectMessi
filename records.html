@@ -8,6 +8,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.168.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.168.0/examples/jsm/"
+      }
+    }
+    </script>
+
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/main.js" type="module"></script>
 </head>
@@ -73,13 +82,13 @@
             </div>
             <aside class="trophy-wall">
                 <h2>3D trophy wall (prototype)</h2>
-                <p>This placeholder represents a future Three.js scene featuring Messi&rsquo;s major silverware. For now, we surface the counts directly:</p>
+                <div class="trophy-canvas" data-trophy-canvas aria-label="Interactive trophy model"></div>
+                <p class="highlight-note">Rendered with Three.js using the official World Cup trophy GLB. Figures below stay live from the dataset:</p>
                 <ul>
                     <li><span data-stat-key="messi.accolades.totalTrophies">0</span> Major trophies</li>
                     <li><span data-stat-key="messi.accolades.ballonDor">0</span> Ballon d'Or awards</li>
                     <li><span data-stat-key="messi.accolades.fifaBest">0</span> FIFA Best / FIFA World Player</li>
                 </ul>
-                <p class="highlight-note">Hook up a GLB model and render with Three.js to complete the experience.</p>
             </aside>
         </section>
     </main>

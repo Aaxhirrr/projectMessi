@@ -437,6 +437,208 @@ if (yearEl) {
   yearEl.textContent = new Date().getFullYear();
 }
 
+let threeBundle = null;
+
+const loadThreeBundle = async () => {
+  if (threeBundle) return threeBundle;
+  const [THREE, loaderModule, controlsModule] = await Promise.all([
+    import('three'),
+    import('three/addons/loaders/GLTFLoader.js'),
+    import('three/addons/controls/OrbitControls.js'),
+  ]);
+  threeBundle = {
+    THREE,
+    GLTFLoader: loaderModule.GLTFLoader,
+    OrbitControls: controlsModule.OrbitControls,
+  };
+  return threeBundle;
+};
+
+const initTrophyScene = async () => {
+  const container = doc.querySelector('[data-trophy-canvas]');
+  if (!container) return;
+  const supportsWebGL =
+    typeof window.WebGLRenderingContext !== 'undefined' &&
+    (() => {
+      const canvas = doc.createElement('canvas');
+      return !!(
+        canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+      );
+    })();
+  if (!supportsWebGL) {
+    container.textContent = 'WebGL not supported on this device.';
+    container.style.display = 'grid';
+    container.style.placeItems = 'center';
+    return;
+  }
+
+  try {
+    const { THREE, GLTFLoader, OrbitControls } = await loadThreeBundle();
+    const { clientWidth: width, clientHeight: height } = container;
+    container.textContent = '';
+
+    const scene = new THREE.Scene();
+    scene.background = null;
+
+    const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
+    camera.position.set(0, 1.2, 4.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(width, height);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.enablePan = false;
+    controls.minDistance = 3.2;
+    controls.maxDistance = 6;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.6;
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambient);
+
+    const directional = new THREE.DirectionalLight(0xffffff, 1.2);
+    directional.position.set(2, 4, 5);
+    scene.add(directional);
+
+    const rimLight = new THREE.DirectionalLight(0xffffaa, 0.6);
+    rimLight.position.set(-2, 1.5, -3);
+    scene.add(rimLight);
+
+    const hemi = new THREE.HemisphereLight(0xffffee, 0x202020, 0.6);
+    scene.add(hemi);
+
+    const loader = new GLTFLoader();
+    let model = null;
+
+    loader.load(
+      "assets/models/world_cup_trophy.glb",
+      (gltf) => {
+        model = gltf.scene;
+
+        // First, log all meshes to see what we're dealing with
+        console.log('=== All meshes in model ===');
+        model.traverse((child) => {
+          if (child.isMesh) {
+            const mat = Array.isArray(child.material) ? child.material[0] : child.material;
+            const color = mat?.color;
+            const vertCount = child.geometry?.attributes.position?.count || 0;
+            console.log('Mesh:', {
+              name: child.name,
+              vertCount,
+              color: color ? `rgb(${color.r}, ${color.g}, ${color.b})` : 'none'
+            });
+          }
+        });
+
+        // Filter out any weird meshes (like balloons) based on color or geometry
+        model.traverse((child) => {
+          if (child.isMesh) {
+            // Check if mesh has a green/lime colored material (the balloon)
+            if (child.material) {
+              const mat = Array.isArray(child.material) ? child.material[0] : child.material;
+              if (mat.color) {
+                // Remove meshes with bright green/lime color (likely the balloon)
+                const isGreenish = mat.color.g > 0.5 && mat.color.r < 0.7;
+                if (isGreenish) {
+                  console.log('✓ Removing green mesh (balloon):', child.name, mat.color);
+                  child.visible = false;
+                  return;
+                }
+              }
+            }
+
+            // Also check geometry - if it's a torus or has weird vertex count, hide it
+            if (child.geometry) {
+              const vertCount = child.geometry.attributes.position?.count || 0;
+              // Balloons/torus typically have specific vertex patterns
+              if (vertCount > 50000 || child.geometry.type === 'TorusGeometry') {
+                console.log('✓ Removing suspicious geometry:', child.name, vertCount);
+                child.visible = false;
+              }
+            }
+          }
+        });
+
+        model.updateMatrixWorld(true);
+
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.sub(center);
+
+        const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+        const targetHeight = 2.6;
+        const scale = targetHeight / maxAxis;
+        model.scale.setScalar(scale);
+        model.position.y -= 0.6;
+
+        scene.add(model);
+        controls.target.set(0, 0, 0);
+        console.info('Trophy model loaded', { size, scale });
+      },
+      undefined,
+      (error) => {
+        console.error('Trophy GLB failed to load', error);
+        container.textContent = 'Unable to load trophy model.';
+        container.style.display = 'grid';
+        container.style.placeItems = 'center';
+      }
+    );
+
+    // fallback helper geometry if the model fails silently
+    if (!model) {
+      const helperGeometry = new THREE.TorusKnotGeometry(0.9, 0.24, 120, 16);
+      const helperMaterial = new THREE.MeshStandardMaterial({
+        color: 0xc4ff00,
+        metalness: 0.4,
+        roughness: 0.35,
+        emissive: 0x112244,
+        emissiveIntensity: 0.4,
+      });
+      const helperMesh = new THREE.Mesh(helperGeometry, helperMaterial);
+      helperMesh.visible = false;
+      scene.add(helperMesh);
+      model = helperMesh;
+    }
+
+    const baseYOffset = -0.6;
+    const clock = new THREE.Clock();
+    const animate = () => {
+      requestAnimationFrame(animate);
+      const elapsed = clock.getElapsedTime();
+      if (model) {
+        model.rotation.y = elapsed * 0.3;
+        const bob = Math.sin(elapsed * 1.2) * 0.05;
+        model.position.y = baseYOffset + bob;
+        model.visible = true;
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const onResize = () => {
+      const { clientWidth, clientHeight } = container;
+      renderer.setSize(clientWidth, clientHeight);
+      camera.aspect = clientWidth / clientHeight;
+      camera.updateProjectionMatrix();
+    };
+
+    window.addEventListener('resize', onResize);
+  } catch (error) {
+    console.error('Three.js viewer failed to initialize:', error);
+    container.textContent = '3D viewer unavailable.';
+    container.style.display = 'grid';
+    container.style.placeItems = 'center';
+  }
+};
+
+initTrophyScene();
+
 const initSortableTables = () => {
   doc.querySelectorAll('table[data-sortable]').forEach((table) => {
     const tbody = table.tBodies[0];
@@ -482,4 +684,6 @@ const initSortableTables = () => {
 };
 
 initSortableTables();
+
+
 

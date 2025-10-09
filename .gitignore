@@ -1,0 +1,14 @@
+# Local caches and temp artifacts
+*.log
+*.tmp
+*.temp
+temp_patch_block.txt
+
+# Large local models/datasets not intended for repo
+data/*.glb
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+
